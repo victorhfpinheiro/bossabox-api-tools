@@ -1,29 +1,18 @@
-import { Request, Response } from 'express'
+import { Joi, Segments } from 'celebrate'
 
-class ToolsValidator {
-  public create (req: Request, res: Response): Response {
-    const { title, link, description, tags } = req.body
-    if (!title) {
-      return res.status(400).send()
-    }
-    if (!link) {
-      return res.status(400).send()
-    }
-    if (!description) {
-      return res.status(400).send()
-    }
-    if (!tags) {
-      return res.status(400).send()
-    }
+export class ToolsValidator {
+  public static create = {
+    [Segments.BODY]: Joi.object().keys({
+      title: Joi.string().required(),
+      link: Joi.string().required(),
+      description: Joi.string().required(),
+      tags: Joi.array().required()
+    }).unknown()
   }
 
-  public delete (req: Request, res: Response): Response {
-    const { id } = req.query
-
-    if (!id) {
-      return res.status(400).send()
-    }
+  public static delete = {
+    [Segments.PARAMS]: Joi.object().keys({
+      id: Joi.number().required()
+    }).unknown()
   }
 }
-
-export default new ToolsValidator()

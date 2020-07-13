@@ -1,17 +1,16 @@
 import express from 'express'
 import cors from 'cors'
-import mongoose from 'mongoose'
 import * as dotenv from 'dotenv'
 
 import routes from './routes'
+import { errors } from 'celebrate'
 
 class App {
     public express: express.Application;
 
     public constructor () {
       this.express = express()
-      // this.middlewares()
-      // this.database()
+      this.middlewares()
       this.routes()
       this.envs()
     }
@@ -25,16 +24,9 @@ class App {
       this.express.use(cors())
     }
 
-    private database (): void {
-      mongoose.connect('mongodb://localhost:27017/tsnode', {
-        useNewUrlParser: true,
-        useCreateIndex: true,
-        useUnifiedTopology: true
-      })
-    }
-
     private routes (): void {
       this.express.use('/api', routes)
+      this.express.use(errors())
     }
 }
 

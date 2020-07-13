@@ -1,61 +1,63 @@
 // import { Request, Response, NextFunction } from 'express'
+// import * as jwt from 'jsonwebtoken'
+// import * as bcrypt from 'bcrypt'
 
-class Auth {
+// class Auth {
 //   public validateJwt (req: Request, res: Response, next: NextFunction): Response {
 //     const authHeader = req.headers.authorization
 
-  //     if (!authHeader) {
-  //       return res.status(401).send({ error: 'No token provided' })
-  //     }
+//     if (!authHeader) {
+//       return res.status(401).send({ error: 'No token provided' })
+//     }
 
-  //     const parts = authHeader.split(' ')
+//     const parts = authHeader.split(' ')
 
-  //     if (!parts.length === 2) {
-  //       return res.status(401).send({ error: 'Token error' })
-  //     }
+//     if (!parts.length === 2) {
+//       return res.status(401).send({ error: 'Token error' })
+//     }
 
-  //     const [scheme, token] = parts
+//     const [scheme, token] = parts
 
-  //     if (!/^Bearer$/i.test(scheme)) {
-  //       return res.status(401).send({ error: 'Token malformatted' })
-  //     }
+//     if (!/^Bearer$/i.test(scheme)) {
+//       return res.status(401).send({ error: 'Token malformatted' })
+//     }
 
-  //     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-  //       if (err) {
-  //         return res.status(401).send({ error: 'Token invalid' })
-  //       }
+//     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+//       if (err) {
+//         return res.status(401).send({ error: 'Token invalid' })
+//       }
 
-  //       req.userId = decoded.id
-  //       return next()
-  //     })
-  //   }
+//       req.userId = decoded.id
+//       return next()
+//     })
+//   }
 
-  //   public async authenticate (req: Request, res: Response): Promise<Response> {
-  //     const { clientId, clientSecret } = req.body
+//   public async authenticate (req: Request, res: Response): Promise<Response> {
+//     const { clientId, clientSecret } = req.body
 
-  //     const user = await User.findOne({ email }).select('+password')
+//     const user = await User.findOne({ email }).select('+password')
 
-  //     if (!user) {
-  //       return res.status(400).send({ error: 'User Not Found' })
-  //     }
+//     if (!user) {
+//       return res.status(400).send({ error: 'User Not Found' })
+//     }
 
-  //     if (!await bcrypt.compare(password, user.password)) {
-  //       return res.status(400).send({ error: 'Invalid password' })
-  //     }
+//     if (!await bcrypt.compare(password, user.password)) {
+//       return res.status(400).send({ error: 'Invalid password' })
+//     }
 
-  //     user.password = undefined
+//     user.password = undefined
 
-  //     res.send({
-  //       user,
-  //       token: this.generateToken({ id: user.id })
-  //     })
-  //   }
+//     res.send({
+//       user,
+//       token: this.generateToken({ id: user.id })
+//     })
+//   }
 
 //   public generateToken (params): string {
 //     return jwt.sign(params, process.env.SECRET_KEY, {
 //       expiresIn: 3600
 //     })
 //   }
-}
+// }
 
-export default new Auth()
+// export default new Auth()
