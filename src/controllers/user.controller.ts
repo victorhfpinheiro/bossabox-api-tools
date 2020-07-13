@@ -17,19 +17,19 @@ class UserController {
 
     if (userDb) {
       return res.status(400).send({ error: 'Usuario já cadastrado!' })
-    } else {
-      user.password = await hash(user.password, 10)
-      const [id] = await connection('users').insert(user)
-      user.id = id
-      user.password = undefined
-
-      const token = await AuthUtils.generateToken({ email: user.email })
-
-      return res.status(201).json({
-        user,
-        token
-      })
     }
+
+    user.password = await hash(user.password, 10)
+    const [id] = await connection('users').insert(user)
+    user.id = id
+    user.password = undefined
+
+    const token = await AuthUtils.generateToken({ email: user.email })
+
+    return res.status(201).json({
+      user,
+      token
+    })
   }
 }
 

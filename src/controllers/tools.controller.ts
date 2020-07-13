@@ -19,6 +19,12 @@ class ToolsController {
   public async create (req: Request, res: Response): Promise<Response> {
     const tools = req.body as Tools
 
+    const toolsDb = await connection('tools').select('*').where('title', tools.title).first() as Tools
+
+    if (toolsDb) {
+      return res.status(400).send({ error: 'Ferramenta já cadastrada' })
+    }
+
     const [id] = await connection('tools').insert(tools)
     tools.id = id
 

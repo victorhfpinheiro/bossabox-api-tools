@@ -12,21 +12,20 @@ class Auth {
     const parts = authHeader.split(' ')
 
     if (!(parts.length === 2)) {
-      return res.status(401).send({ error: 'Token error' })
+      return res.status(401).send({ error: 'Token mal formatado' })
     }
 
     const [scheme, token] = parts
 
     if (!/^Bearer$/i.test(scheme)) {
-      return res.status(401).send({ error: 'Token malformatted' })
+      return res.status(401).send({ error: 'Token mal formatado' })
     }
 
-    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    jwt.verify(token, process.env.SECRET_KEY, (err) => {
       if (err) {
-        return res.status(401).send({ error: 'Token invalid' })
+        return res.status(401).send({ error: 'Token inválido' })
       }
 
-      // req.userId = decoded.id
       return next()
     })
   }
@@ -37,11 +36,11 @@ class Auth {
     const user = await connection('users').select('*').where('email', email).first() as User
 
     if (!user) {
-      return res.status(400).send({ error: 'Client Not Found' })
+      return res.status(400).send({ error: 'Usuário não existe' })
     }
 
     if (!await bcrypt.compare(password, user.password)) {
-      return res.status(400).send({ error: 'Invalid password' })
+      return res.status(400).send({ error: 'Senha inválida' })
     }
 
     user.password = undefined
