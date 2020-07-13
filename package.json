@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --inspect --respawn --ignore-watch node_modules --no-notify src/server.ts",
+    "dev": "ts-node-dev --inspect --respawn --ignore-watch node_modules --no-notify -r dotenv/config src/server.ts dotenv_config_path=env/.env",
     "knex:migrate:make": "knex --knexfile knexfile.ts -x ts migrate:make",
     "knex:migrate:latest": "knex --knexfile knexfile.ts migrate:latest",
     "knex:migrate:rollback": "knex --knexfile knexfile.ts migrate:rollback"

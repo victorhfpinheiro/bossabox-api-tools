@@ -1,7 +1,7 @@
 import * as Knex from 'knex'
 
 export async function up (knex: Knex): Promise<void> {
-  return knex.schema.createTable('tools', function (table) {
+  return knex.schema.createTableIfNotExists('tools', function (table) {
     table.increments().primary()
     table.string('title').notNullable().unique()
     table.string('link').notNullable()
