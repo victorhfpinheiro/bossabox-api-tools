@@ -1,40 +1,39 @@
 /* eslint-disable no-unused-vars */
 import { Request, Response } from 'express'
-import connection from '../database/connection'
-import { Tools } from '../models/tools.model'
+import { Tool } from '../models/tool.model'
+import ToolsService from '../services/tools.service'
 
 class ToolsController {
   public async index (req: Request, res: Response): Promise<Response> {
     const { tag } = req.query
-    let tools: Tools[]
-    if (tag) {
-      tools = await connection('tools').select('*').where('tags', 'like', '%' + tag + '%') as Tools[]
-    } else {
-      tools = await connection('tools').select('*') as Tools[]
-    }
+
+    const tools = await ToolsService.index(tag)
 
     return res.status(200).json(tools)
   }
 
   public async create (req: Request, res: Response): Promise<Response> {
-    const tools = req.body as Tools
+    const { title, link, description, tags } = req.body
 
-    const toolsDb = await connection('tools').select('*').where('title', tools.title).first() as Tools
+    const tool = await ToolsService.findByTitle(title)
 
-    if (toolsDb) {
+    if (tool) {
       return res.status(400).send({ error: 'Ferramenta já cadastrada' })
     }
 
-    const [id] = await connection('tools').insert(tools)
-    tools.id = id
+    const id = await ToolsService.create(title, link, description, tags)
 
-    return res.status(201).json(tools)
+    if (!id) {
+      return res.status(400).json({ error: 'Algo deu errado, tente novamente mais tarde!' })
+    }
+
+    return res.status(201).json({ id: id })
   }
 
   public async delete (req: Request, res: Response): Promise<Response> {
     const { id } = req.params
 
-    await connection('tools').where('id', id).delete(id)
+    await ToolsService.delete(id)
 
     return res.status(204).send()
   }
