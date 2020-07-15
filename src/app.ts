@@ -39,10 +39,7 @@ class App {
     }
 
     private envs (): void {
-      dotenv.config({
-        debug: true,
-        path: process.env.NODE_ENV === 'test' ? './test.env' : '/.env'
-      })
+      dotenv.config()
     }
 }
 

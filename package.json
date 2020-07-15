@@ -5,6 +5,7 @@
   "author": "Victor H F Pinheiro <victorhfp.bcc@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "prebuild":"rm -rf dist",
     "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files --no-copy-ignored",
     "dev": "ts-node-dev --inspect -r tsconfig-paths/register --respawn --ignore-watch node_modules --no-notify -r dotenv/config src/server.ts dotenv_config_path=.env",
     "start": "node dist/server.js",
