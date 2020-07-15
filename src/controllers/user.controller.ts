@@ -1,32 +1,33 @@
 import { Request, Response } from 'express'
-import { User } from '../models/user.model'
-import connection from '../database/connection'
-import { hash } from 'bcrypt'
-import AuthUtils from '../utils/auth.utils'
+import authUtils from '@utils/auth.utils'
+import User from '@schemas/user.schema'
 
 class UserController {
   public async index (req: Request, res: Response): Promise<Response> {
-    const users = await connection('users').select('id', 'name', 'email') as User[]
+    const users = User.find()
     return res.status(200).json(users)
   }
 
   public async create (req: Request, res: Response): Promise<Response> {
-    const user = req.body as User
+    const { name, email, password } = req.body
 
-    const userDb = await connection('users').select('*').where('email', user.email).first() as User
+    const userExists = await User.findOne({ email })
 
-    if (userDb) {
-      return res.status(400).send({ error: 'Usuario já cadastrado!' })
+    if (userExists) {
+      return res.status(400).send({ sucesso: false, mensagem: 'Usuário já cadastrado!' })
     }
 
-    user.password = await hash(user.password, 10)
-    const [id] = await connection('users').insert(user)
-    user.id = id
+    const user = await User.create({ name: name, email: email, password: password })
     user.password = undefined
 
-    const token = await AuthUtils.generateToken({ email: user.email })
+    if (!user) {
+      return res.status(400).json({ sucesso: false, mensagem: 'Ops! Algo deu errado, tente novamente mais tarde!' })
+    }
+
+    const token = await authUtils.generateToken({ email: user.email })
 
     return res.status(201).json({
+      sucesso: true,
       user,
       token
     })

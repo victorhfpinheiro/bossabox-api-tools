@@ -1,13 +1,21 @@
-/* eslint-disable no-unused-vars */
 import { Request, Response } from 'express'
-import { Tool } from '../models/tool.model'
-import ToolsService from '../services/tools.service'
+import Tool, { IToolInterface } from '@schemas/tool.schema'
 
 class ToolsController {
   public async index (req: Request, res: Response): Promise<Response> {
     const { tag } = req.query
 
-    const tools = await ToolsService.index(tag)
+    let tools: IToolInterface[]
+
+    if (tag) {
+      tools = await Tool.find({
+        tags: {
+          $in: Array.of(tag) as string[]
+        }
+      })
+    } else {
+      tools = await Tool.find()
+    }
 
     return res.status(200).json(tools)
   }
@@ -15,25 +23,29 @@ class ToolsController {
   public async create (req: Request, res: Response): Promise<Response> {
     const { title, link, description, tags } = req.body
 
-    const tool = await ToolsService.findByTitle(title)
+    const toolExists = await Tool.findOne(
+      { title: title }
+    )
 
-    if (tool) {
-      return res.status(400).send({ error: 'Ferramenta já cadastrada' })
+    if (toolExists) {
+      return res.status(400).send({ sucesso: false, mensagem: 'Ferramenta já cadastrada!' })
     }
 
-    const id = await ToolsService.create(title, link, description, tags)
+    // const tagsDb = await Tag.createCollection(tags)
 
-    if (!id) {
-      return res.status(400).json({ error: 'Algo deu errado, tente novamente mais tarde!' })
+    const tool = await Tool.create({ title: title, link: link, description: description, tags: tags })
+
+    if (!tool) {
+      return res.status(400).json({ sucesso: false, mensagem: 'Ops! Algo deu errado, tente novamente mais tarde!' })
     }
 
-    return res.status(201).json({ id: id })
+    return res.status(201).json({ sucesso: true, tool })
   }
 
   public async delete (req: Request, res: Response): Promise<Response> {
     const { id } = req.params
 
-    await ToolsService.delete(id)
+    await Tool.findByIdAndDelete(id)
 
     return res.status(204).send()
   }

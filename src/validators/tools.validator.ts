@@ -24,7 +24,7 @@ export class ToolsValidator {
       authorization: Joi.string().required()
     }).unknown(),
     [Segments.PARAMS]: Joi.object().keys({
-      id: Joi.number().required()
+      id: Joi.string().required()
     }).unknown()
   }
 }
